@@ -6,6 +6,7 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
+bytes = { version = "1.9", features = ["serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 # nodejs-semver = { version = "4.1.0", features = ["serde"] }
 reqwest = { version = "0.12", features = ["json"] }

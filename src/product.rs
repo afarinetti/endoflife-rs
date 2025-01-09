@@ -1,6 +1,8 @@
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
-use std::{error::Error, fs::File, io::BufReader, path::Path};
+use std::{error::Error, path::Path};
+use tokio::fs::File;
+use tokio::io::AsyncReadExt;
 
 const URL_EOL_API: &str = "https://endoflife.date/api";
 
@@ -24,11 +26,13 @@ pub struct Product {
     discontinued: Option<String>,
 }
 
-pub fn read_from_file<P: AsRef<Path>>(path: P) -> Result<Vec<Product>, Box<dyn Error>> {
-    let file = File::open(path)?;
-    let reader = BufReader::new(file);
+pub async fn read_from_file<P: AsRef<Path>>(path: P) -> Result<Vec<Product>, Box<dyn Error>> {
+    let mut file = File::open(path).await?;
+    let mut buffer = String::new();
 
-    let products = serde_json::from_reader(reader)?;
+    file.read_to_string(&mut buffer).await?;
+
+    let products = serde_json::from_str(&buffer)?;
 
     Ok(products)
 }
