@@ -1,13 +1,10 @@
-use endoflife_rs::product::Product;
+use endoflife_rs::product::*;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let resp = reqwest::get("https://endoflife.date/api/python.json")
-        .await?
-        .json::<Vec<Product>>()
-        .await?;
+    let products = read_from_url("python").await?;
 
-    for p in resp {
+    for p in products {
         println!("{p:#?}");
         break;
     }
