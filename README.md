@@ -25,7 +25,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 <details>
   <summary>Output</summary>
-
+  ```python
+  print('Hello World!')
+  ```
 </details>
 
 ### Get Single Cycle Details
@@ -41,8 +43,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 <details>
-  <summary>Output</summary>
-
+  <summary markdown="span">Output</summary>
+  ```python
+  print('Hello World!')
+  ```
 </details>
 
 ### Get All Products
@@ -59,7 +63,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 <details>
   <summary>Output</summary>
-
+  ```python
+  print('Hello World!')
+  ```
 </details>
 
 ## License
