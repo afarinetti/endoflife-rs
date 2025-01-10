@@ -1,4 +1,4 @@
-use endoflife_rs::product::*;
+use endoflife_rs::*;
 use std::{error::Error, path::Path};
 use tokio::fs::File;
 use tokio::io::AsyncReadExt;
