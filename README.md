@@ -1,4 +1,4 @@
-[![Rust](https://github.com/afarinetti/endoflife-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/afarinetti/endoflife-rs/actions/workflows/rust.yml) - [![rust-clippy analyze](https://github.com/afarinetti/endoflife-rs/actions/workflows/rust-clippy.yml/badge.svg)](https://github.com/afarinetti/endoflife-rs/actions/workflows/rust-clippy.yml)
+[![Rust](https://github.com/afarinetti/endoflife-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/afarinetti/endoflife-rs/actions/workflows/rust.yml) | [![rust-clippy analyze](https://github.com/afarinetti/endoflife-rs/actions/workflows/rust-clippy.yml/badge.svg)](https://github.com/afarinetti/endoflife-rs/actions/workflows/rust-clippy.yml)
 
 # endoflife-rs
 
