@@ -1,8 +1,6 @@
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
-use std::{error::Error, path::Path};
-use tokio::fs::File;
-use tokio::io::AsyncReadExt;
+use std::error::Error;
 
 const URL_EOL_API: &str = "https://endoflife.date/api";
 
@@ -14,8 +12,9 @@ pub enum DateOrBool {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Product {
-    cycle: Option<String>,
+pub struct Cycle {
+    #[serde(default)]
+    cycle: String,
     #[serde(rename = "releaseDate")]
     release_date: NaiveDate,
     eol: DateOrBool,
@@ -26,41 +25,45 @@ pub struct Product {
     discontinued: Option<String>,
 }
 
-pub async fn read_from_file<P: AsRef<Path>>(path: P) -> Result<Vec<Product>, Box<dyn Error>> {
-    let mut file = File::open(path).await?;
-    let mut buffer = String::new();
-
-    file.read_to_string(&mut buffer).await?;
-
-    let products = serde_json::from_str(&buffer)?;
-
-    Ok(products)
-}
-
-pub async fn read_from_url(product_name: &str) -> Result<Vec<Product>, Box<dyn Error>> {
-    let url = format!("{}/{}.json", URL_EOL_API, product_name);
+pub async fn get_all_details(product: &str) -> Result<Vec<Cycle>, Box<dyn Error>> {
+    let url = format!("{}/{}.json", URL_EOL_API, product);
 
     let response = reqwest::get(url).await?;
     match response.error_for_status() {
         Ok(res) => {
-            let products = res.json::<Vec<Product>>().await?;
-            Ok(products)
+            let cycles = res.json::<Vec<Cycle>>().await?;
+            Ok(cycles)
         }
         Err(err) => Err(err.into()),
     }
 }
 
-pub async fn get_single_product_cycle(
-    product_name: &str,
-    cycle: &str,
-) -> Result<Product, Box<dyn Error>> {
-    let url = format!("{}/{}/{}.json", URL_EOL_API, product_name, cycle);
+pub async fn get_single_cycle_details(product: &str, cycle: &str) -> Result<Cycle, Box<dyn Error>> {
+    let url = format!("{}/{}/{}.json", URL_EOL_API, product, cycle);
 
     let response = reqwest::get(url).await?;
     match response.error_for_status() {
         Ok(res) => {
-            let product = res.json::<Product>().await?;
-            Ok(product)
+            let cycle_temp = res.json::<Cycle>().await?;
+            let cycle = Cycle {
+                cycle: cycle.to_string(),
+                ..cycle_temp
+            };
+
+            Ok(cycle)
+        }
+        Err(err) => Err(err.into()),
+    }
+}
+
+pub async fn get_all_products() -> Result<Vec<String>, Box<dyn Error>> {
+    let url = format!("{}/all.json", URL_EOL_API);
+
+    let response = reqwest::get(url).await?;
+    match response.error_for_status() {
+        Ok(res) => {
+            let products = res.json::<Vec<String>>().await?;
+            Ok(products)
         }
         Err(err) => Err(err.into()),
     }
