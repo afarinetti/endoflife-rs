@@ -1,7 +1,5 @@
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::fmt;
 use std::{error::Error, path::Path};
 use tokio::fs::File;
 use tokio::io::AsyncReadExt;
@@ -42,32 +40,13 @@ pub async fn read_from_file<P: AsRef<Path>>(path: P) -> Result<Vec<Product>, Box
 pub async fn read_from_url(product_name: &str) -> Result<Vec<Product>, Box<dyn Error>> {
     let url = format!("{}/{}.json", URL_EOL_API, product_name);
 
-    let products = reqwest::get(url).await?.json::<Vec<Product>>().await?;
-
-    Ok(products)
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-#[serde(untagged)]
-enum ProductOrString {
-    Product(Product),
-    Map(HashMap<String, String>),
-}
-
-#[derive(Debug, Clone)]
-pub enum ApiError {
-    ProductNotFound,
-    UnknownError,
-}
-
-impl Error for ApiError {}
-
-impl fmt::Display for ApiError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            ApiError::ProductNotFound => write!(f, "Product not found."),
-            ApiError::UnknownError => write!(f, "Unknown error."),
+    let response = reqwest::get(url).await?;
+    match response.error_for_status() {
+        Ok(res) => {
+            let products = res.json::<Vec<Product>>().await?;
+            Ok(products)
         }
+        Err(err) => Err(err.into()),
     }
 }
 
@@ -77,27 +56,12 @@ pub async fn get_single_product_cycle(
 ) -> Result<Product, Box<dyn Error>> {
     let url = format!("{}/{}/{}.json", URL_EOL_API, product_name, cycle);
 
-    let result = reqwest::get(url).await?.json::<ProductOrString>().await?;
-
-    match result {
-        ProductOrString::Product(p) => {
-            let result = Product {
-                cycle: Some(cycle.to_string()),
-                ..p
-            };
-            Ok(result)
+    let response = reqwest::get(url).await?;
+    match response.error_for_status() {
+        Ok(res) => {
+            let product = res.json::<Product>().await?;
+            Ok(product)
         }
-        ProductOrString::Map(m) => {
-            let error = if let Some(message) = m.get("message") {
-                if "Product not found".eq(message) {
-                    ApiError::ProductNotFound
-                } else {
-                    ApiError::UnknownError
-                }
-            } else {
-                ApiError::UnknownError
-            };
-            Err(error.into())
-        }
+        Err(err) => Err(err.into()),
     }
 }
