@@ -8,7 +8,44 @@ TBD
 
 ## Usage
 
-TBD
+### Get All Details
+
+```rust
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let cycles = get_all_details("python").await?;
+    for cycle in cycles {
+        println!("{cycle:#?}");
+        break;
+    }
+
+    Ok(())
+}
+```
+
+### Get Single Cycle Details
+
+```rust
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let cycle = get_single_cycle_details("python", "3.12").await?;
+    println!("{cycle:#?}");
+
+    Ok(())
+}
+```
+
+### Get All Products
+
+```rust
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let products = get_all_products().await?;
+    println!("{products:#?}");
+
+    Ok(())
+}
+```
 
 ## License
 
