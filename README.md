@@ -2,6 +2,8 @@
 
 # endoflife-rs
 
+![Dynamic TOML Badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fafarinetti%2Fendoflife-rs%2Frefs%2Fheads%2Fmain%2FCargo.toml&query=%24.package.version&label=Version)  ![GitHub top language](https://img.shields.io/github/languages/top/afarinetti/endoflife-rs)
+
 An [https://endoflife.date](endoflife.date) API client written in Rust.
 
 ## Installation
