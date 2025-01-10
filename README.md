@@ -1,3 +1,5 @@
+[![Rust](https://github.com/afarinetti/endoflife-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/afarinetti/endoflife-rs/actions/workflows/rust.yml)[![rust-clippy analyze](https://github.com/afarinetti/endoflife-rs/actions/workflows/rust-clippy.yml/badge.svg)](https://github.com/afarinetti/endoflife-rs/actions/workflows/rust-clippy.yml)
+
 # endoflife-rs
 
 An [https://endoflife.date](endoflife.date) API client written in Rust.
