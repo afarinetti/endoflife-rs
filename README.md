@@ -8,7 +8,15 @@ An [https://endoflife.date](endoflife.date) API client written in Rust.
 
 ## Installation
 
-TBD
+### From git:
+
+```bash
+cargo add --git https://github.com/afarinetti/endoflife-rs
+```
+
+### From https://crates.io:
+
+TODO
 
 ## Usage
 
