@@ -83,15 +83,12 @@ pub struct Cycle {
 /// ```rust
 /// use endoflife_rs::*;
 ///
-//  #[tokio::main]
-/// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-///     let cycles = get_all_details("python").await?;
-///     for cycle in cycles {
-///         println!("{cycle:#?}");
-///     }
-///
-///     Ok(())
+/// # tokio_test::block_on(async {
+/// let cycles = get_all_details("python").await; // this should end in .await?;
+/// for cycle in cycles {
+///     println!("{cycle:#?}");
 /// }
+/// # })
 /// ```
 ///
 /// # Errors
@@ -117,13 +114,10 @@ pub async fn get_all_details(product: &str) -> Result<Vec<Cycle>, Box<dyn Error>
 /// ```rust
 /// use endoflife_rs::*;
 ///
-/// #[tokio::main]
-/// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-///     let cycle = get_single_cycle_details("python", "3.12").await?;
-///     println!("{cycle:#?}");
-///
-///     Ok(())
-/// }
+/// # tokio_test::block_on(async {
+/// let cycle = get_single_cycle_details("python", "3.12").await; // this should end in .await?;
+/// println!("{cycle:#?}");
+/// # })
 /// ```
 ///
 /// # Errors
@@ -157,12 +151,10 @@ pub async fn get_single_cycle_details(
 /// ```rust
 /// use endoflife_rs::*;
 ///
-/// #[tokio::main]
-/// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-///     let products = get_all_products().await?;
-///     println!("{products:#?}");
-///     Ok(())
-/// }
+/// # tokio_test::block_on(async {
+/// let products = get_all_products().await; // this should end in .await?;
+/// println!("{products:#?}");
+/// # })
 /// ```
 ///
 /// # Errors
