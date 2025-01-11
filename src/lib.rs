@@ -6,14 +6,14 @@
 //!
 
 use chrono::NaiveDate;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use std::{error::Error, fmt};
 
 /// URL to the [endoflife.date](https://endoflife.date/) API.
 const URL_EOL_API: &str = "https://endoflife.date/api";
 
 /// Either a date ([chrono::NaiveDate]) or boolean ([bool]).
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 #[serde(untagged)]
 pub enum DateOrBool {
     /// Date returned by the API.
@@ -36,7 +36,7 @@ impl fmt::Display for DateOrBool {
 
 /// Struct representing the API's return for a single product cycle.
 /// - Source: https://endoflife.date/docs/api
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Cycle {
     /// Cycle version (ex: for `Python 3.12.8`, it would return `3.12`).
     #[serde(default)]
