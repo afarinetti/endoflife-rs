@@ -1,14 +1,12 @@
+use clap::Parser;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Cell, CellAlignment, Color, ContentArrangement, Table};
 use endoflife_rs::*;
-use std::{error::Error, path::Path};
+use std::{error::Error, fmt, path::Path, path::PathBuf};
 use tokio::fs::File;
 use tokio::io::AsyncReadExt;
 
-const PATH_PYTHON_JSON: &str = "examples/data/python.json";
-const PATH_NODE_JSON: &str = "examples/data/node.json";
-const PATH_UBUNTU_JSON: &str = "examples/data/ubuntu.json";
-const PATH_RUST_JSON: &str = "examples/data/rust.json";
+const PATH_EXAMPLE_DATA: &str = "examples/data/";
 
 async fn read_from_file<P: AsRef<Path>>(path: P) -> Result<Vec<Cycle>, Box<dyn Error>> {
     let mut file = File::open(path).await?;
@@ -39,8 +37,28 @@ fn cycle_to_vec(cycle: Cycle) -> Vec<Cell> {
     ]
 }
 
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+struct Cli {
+    /// Name of the product to query
+    product: String,
+}
+
+#[derive(Debug, Clone)]
+struct FileNotFound(PathBuf);
+
+impl fmt::Display for FileNotFound {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "File not found: {}", self.0.display())
+    }
+}
+
+impl Error for FileNotFound {}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    let args = Cli::parse();
+
     let mut table = Table::new();
     table
         .load_preset(UTF8_FULL)
@@ -59,12 +77,22 @@ async fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    let cycles: Vec<Cycle> = read_from_file(PATH_NODE_JSON).await?;
-    for cycle in cycles {
-        table.add_row(cycle_to_vec(cycle));
+    let path = Path::new(PATH_EXAMPLE_DATA)
+        .join(args.product)
+        .with_extension("json");
+
+    match path.try_exists() {
+        Ok(true) => {
+            let cycles: Vec<Cycle> = read_from_file(path).await?;
+            for cycle in cycles {
+                table.add_row(cycle_to_vec(cycle));
+            }
+
+            println!("{table}");
+
+            Ok(())
+        }
+        Ok(false) => Err(FileNotFound(path).into()),
+        Err(err) => Err(err.into()),
     }
-
-    println!("{table}");
-
-    Ok(())
 }
